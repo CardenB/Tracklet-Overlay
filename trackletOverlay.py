@@ -1,4 +1,5 @@
 import cv2
+import cv
 import numpy as np
 import trackletOverlay_pb2 as tOverlay
 from generateTracklets import generateTracklets
@@ -49,24 +50,43 @@ if __name__ == '__main__':
     overlay = tOverlay.Overlay()
     protobuf_fname = 'tOverlay.protobuf'
     vid_fname = sys.argv[1]
+    out_fname = sys.argv[2]
+    CODEC = cv.CV_FOURCC('D','I','V','X') # MPEG-4 = MPEG-1
+    size = (480, 360)
+
+    readOverlayFile(overlay, protobuf_fname, size)
 
     # read in a video file and draw overlay
-    cap = cv2.VideoCapture(vid_fname)
+    if not vid_fname == '':
+        cap = cv2.VideoCapture(vid_fname)
+    else:
+        print "please supply the input video file name at the commmand line."
+
+    if not out_fname == '':
+        writer = cv2.VideoWriter( out_fname,
+                            CODEC,
+                            30,
+                            size,
+                            True)
+    else:
+        print "please supply the output video file name at the command line."
+
+
     if not cap.isOpened():
         print "could not open video"
     while(cap.isOpened()):
         ret, frame = cap.read()
-        size = (np.size(frame, 1), np.size(frame, 0))
-        readOverlayFile(overlay, protobuf_fname, size)
         if ret:
             for tracklet in overlay.tracklets:
                 drawPath(frame, tracklet)
             cv2.imshow('video', frame)
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
+            if writer is not None: writer.write(frame)
         else:
             print 'Video ended'
             break
-    cap.release()
+    if cp.isOpened(): cap.release()
+    if writer.isOpened(): writer.release()
     cv2.destroyAllWindows()
 

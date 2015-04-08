@@ -9,4 +9,4 @@ Opencv must be installed separately. Please consult the documentation for opencv
 Be sure to supply your own video to run.
 Execute by running
 
-python trackletOverlay.py [video file name]
+python trackletOverlay.py [video file name] [output video file name]
