@@ -13,10 +13,11 @@ def generatePixels(tracklet, a, b, numPixels):
         pixel.x = x
         pixel.y = y
 
-def generateTracklets(overlay, numTracklets, numPixels=10, f=None):
+def generateTracklets(overlay, numTracklets, numPixels=10,
+                      f=None, size=(0, 255)):
     for i in range(0, numTracklets):
-        a = randint(0, 255)
-        b = randint(0, 255)
+        a = randint(0, min(size))
+        b = randint(0, min(size))
         # make sure a <= b
         a, b = min(a, b), max(a, b)
         tracklet = overlay.tracklets.add()
